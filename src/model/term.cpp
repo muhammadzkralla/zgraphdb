@@ -2,6 +2,7 @@
 
 namespace zgraphdb {
 
+// Know which kind of term type this is
 TermKind kindOf(const Term& term) {
     if (std::holds_alternative<Iri>(term)) {
         return TermKind::Iri;

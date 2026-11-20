@@ -19,6 +19,11 @@ struct Literal {
     std::string datatype;
 };
 
+// NOTE: A triple is constructed like that: (subject, predicate, object)
+// Each one of those three is called a term.
+// A subject could be either an IRI or a BlankNode
+// A predicate MUST ALWAYS be an IRI
+// An object could be an IRI, a BlankNode, or a Literal
 using Term = std::variant<Iri, BlankNode, Literal>;
 
 enum class TermKind { Iri, BlankNode, Literal };

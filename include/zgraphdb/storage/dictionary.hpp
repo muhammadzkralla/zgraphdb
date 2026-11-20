@@ -17,7 +17,9 @@ public:
     std::size_t size() const;
 
 private:
+    // A hashmap of {term key->id} AVG O(1) lookup
     std::unordered_map<std::string, std::uint32_t> idByKey_;
+    // Direct indexing by position, {id->term}, ids are vector indices
     std::vector<Term> terms_;
 };
 
