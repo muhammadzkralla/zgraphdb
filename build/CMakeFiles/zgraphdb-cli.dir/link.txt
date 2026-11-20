@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/zgraphdb-cli.dir/tools/zgraphdb-cli.cpp.o -o zgraphdb-cli  libzgraphdb.a 
