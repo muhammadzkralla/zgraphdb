@@ -1,0 +1,14 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT ?name WHERE {
+  <http://example.org/alice> foaf:knows ?friend .
+  ?friend foaf:name ?name .
+}
+
+SELECT ?a ?b WHERE {
+  ?a foaf:knows ?b .
+}
+
+ASK WHERE {
+  <http://example.org/alice> foaf:knows <http://example.org/bob> .
+}

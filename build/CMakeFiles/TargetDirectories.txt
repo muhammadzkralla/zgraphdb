@@ -1,0 +1,6 @@
+/mnt/hdd/zgraphdb/build/CMakeFiles/zgraphdb.dir
+/mnt/hdd/zgraphdb/build/CMakeFiles/zgraphdb-cli.dir
+/mnt/hdd/zgraphdb/build/CMakeFiles/zgraphdb-tests.dir
+/mnt/hdd/zgraphdb/build/CMakeFiles/test.dir
+/mnt/hdd/zgraphdb/build/CMakeFiles/edit_cache.dir
+/mnt/hdd/zgraphdb/build/CMakeFiles/rebuild_cache.dir

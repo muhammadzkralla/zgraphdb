@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/mnt/hdd/zgraphdb/build",
+  "command": "/usr/bin/c++  -I/mnt/hdd/zgraphdb/include -std=c++17 -o CMakeFiles/zgraphdb.dir/src/model/term.cpp.o -c /mnt/hdd/zgraphdb/src/model/term.cpp",
+  "file": "/mnt/hdd/zgraphdb/src/model/term.cpp"
+},
+{
+  "directory": "/mnt/hdd/zgraphdb/build",
+  "command": "/usr/bin/c++  -I/mnt/hdd/zgraphdb/include -std=c++17 -o CMakeFiles/zgraphdb.dir/src/storage/dictionary.cpp.o -c /mnt/hdd/zgraphdb/src/storage/dictionary.cpp",
+  "file": "/mnt/hdd/zgraphdb/src/storage/dictionary.cpp"
+},
+{
+  "directory": "/mnt/hdd/zgraphdb/build",
+  "command": "/usr/bin/c++  -I/mnt/hdd/zgraphdb/include -std=c++17 -o CMakeFiles/zgraphdb.dir/src/storage/triple_store.cpp.o -c /mnt/hdd/zgraphdb/src/storage/triple_store.cpp",
+  "file": "/mnt/hdd/zgraphdb/src/storage/triple_store.cpp"
+},
+{
+  "directory": "/mnt/hdd/zgraphdb/build",
+  "command": "/usr/bin/c++  -I/mnt/hdd/zgraphdb/include -std=c++17 -o CMakeFiles/zgraphdb.dir/src/api/db.cpp.o -c /mnt/hdd/zgraphdb/src/api/db.cpp",
+  "file": "/mnt/hdd/zgraphdb/src/api/db.cpp"
+},
+{
+  "directory": "/mnt/hdd/zgraphdb/build",
+  "command": "/usr/bin/c++  -I/mnt/hdd/zgraphdb/include -std=c++17 -o CMakeFiles/zgraphdb-cli.dir/tools/zgraphdb-cli.cpp.o -c /mnt/hdd/zgraphdb/tools/zgraphdb-cli.cpp",
+  "file": "/mnt/hdd/zgraphdb/tools/zgraphdb-cli.cpp"
+},
+{
+  "directory": "/mnt/hdd/zgraphdb/build",
+  "command": "/usr/bin/c++  -I/mnt/hdd/zgraphdb/include -std=c++17 -o CMakeFiles/zgraphdb-tests.dir/tests/test_skeleton.cpp.o -c /mnt/hdd/zgraphdb/tests/test_skeleton.cpp",
+  "file": "/mnt/hdd/zgraphdb/tests/test_skeleton.cpp"
+}
+]

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libzgraphdb.a CMakeFiles/zgraphdb.dir/src/model/term.cpp.o CMakeFiles/zgraphdb.dir/src/storage/dictionary.cpp.o CMakeFiles/zgraphdb.dir/src/storage/triple_store.cpp.o CMakeFiles/zgraphdb.dir/src/api/db.cpp.o
+/usr/bin/ranlib libzgraphdb.a
