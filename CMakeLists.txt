@@ -19,6 +19,9 @@ target_include_directories(zgraphdb PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_executable(zgraphdb-cli tools/zgraphdb-cli.cpp)
 target_link_libraries(zgraphdb-cli PRIVATE zgraphdb)
 
+add_executable(zgraphdb-bench tools/zgraphdb-bench.cpp)
+target_link_libraries(zgraphdb-bench PRIVATE zgraphdb)
+
 enable_testing()
 add_executable(zgraphdb-tests tests/test_skeleton.cpp)
 target_link_libraries(zgraphdb-tests PRIVATE zgraphdb)
