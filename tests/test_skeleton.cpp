@@ -1,11 +1,14 @@
 #include <cassert>
 #include <cstdio>
 #include <fstream>
+#include <optional>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #include "zgraphdb/api/db.hpp"
 #include "zgraphdb/storage/dictionary.hpp"
+#include "zgraphdb/storage/indexes.hpp"
 #include "zgraphdb/storage/triple_store.hpp"
 
 int main() {
@@ -29,6 +32,7 @@ int main() {
     zgraphdb::Database loaded;
     loaded.loadNTriples(std::string(ZGRAPHDB_EXAMPLES_DIR) + "/social.ntriples");
     assert(loaded.size() == 5);
+    assert(loaded.indexes().size() == loaded.size());
 
     const std::string duplicatePath = "test_duplicates.nt";
     {
@@ -59,6 +63,59 @@ int main() {
     assert(threw);
     assert(message.find("line 2") != std::string::npos);
     std::remove(badPath.c_str());
+
+    zgraphdb::Indexes indexes;
+    const std::vector<zgraphdb::EncodedTriple> sample = {
+        {1, 2, 3},
+        {1, 4, 3},
+        {5, 2, 6},
+    };
+    indexes.rebuild(sample);
+
+    const auto all = indexes.lookup(zgraphdb::TriplePattern{});
+    assert(all.size() == 3);
+
+    const auto bySubject = indexes.lookup({1, std::nullopt, std::nullopt});
+    assert(bySubject.size() == 2);
+    assert(bySubject[0].subject == 1);
+    assert(bySubject[0].predicate == 2);
+    assert(bySubject[0].object == 3);
+
+    const auto byPredicate = indexes.lookup({std::nullopt, 2, std::nullopt});
+    assert(byPredicate.size() == 2);
+    assert(byPredicate[0].subject == 1);
+    assert(byPredicate[0].predicate == 2);
+    assert(byPredicate[0].object == 3);
+    assert(byPredicate[1].subject == 5);
+    assert(byPredicate[1].predicate == 2);
+    assert(byPredicate[1].object == 6);
+
+    const auto byObject = indexes.lookup({std::nullopt, std::nullopt, 3});
+    assert(byObject.size() == 2);
+    assert(byObject[0].subject == 1);
+    assert(byObject[0].predicate == 2);
+    assert(byObject[0].object == 3);
+    assert(byObject[1].subject == 1);
+    assert(byObject[1].predicate == 4);
+    assert(byObject[1].object == 3);
+
+    const auto bySubjectPredicate = indexes.lookup({1, 2, std::nullopt});
+    assert(bySubjectPredicate.size() == 1);
+
+    const auto bySubjectObject = indexes.lookup({1, std::nullopt, 3});
+    assert(bySubjectObject.size() == 2);
+
+    const auto byPredicateObject = indexes.lookup({std::nullopt, 2, 6});
+    assert(byPredicateObject.size() == 1);
+    assert(byPredicateObject[0].subject == 5);
+    assert(byPredicateObject[0].predicate == 2);
+    assert(byPredicateObject[0].object == 6);
+
+    const auto exact = indexes.lookup({5, 2, 6});
+    assert(exact.size() == 1);
+    assert(exact[0].subject == 5);
+    assert(exact[0].predicate == 2);
+    assert(exact[0].object == 6);
 
     return 0;
 }

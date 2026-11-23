@@ -5,12 +5,12 @@
 
 namespace zgraphdb {
 
-// NOTE: A single term id could refer to 4.3 billion distinct terms.
-// I still don't know why an id is not unique to just one term.
+// NOTE: Using a uint32_t means that we could have up to 4.3 billion unique term in our database
 using TermId = std::uint32_t;
 
+// A human-readable format of a triple in the database
 struct Triple {
-    // TODO: subject should be validated to ensure it's not a literal term type.
+    // Might be an IRI or a BlankNode, can't be a Literal
     Term subject;
     // MUST BE ALWAYS AN IRI
     Iri predicate;
@@ -18,6 +18,7 @@ struct Triple {
     Term object;
 };
 
+// An encoded format of the tripe to store in the database
 struct EncodedTriple {
     TermId subject;
     TermId predicate;

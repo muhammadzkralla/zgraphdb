@@ -170,10 +170,18 @@ void Database::loadNTriples(const std::string& path) {
             throw std::runtime_error("line " + std::to_string(lineNumber) + ": " + error.what());
         }
     }
+
+    // Rebuild the indexes in our database after initializing it
+    indexes_.rebuild(store_.triples());
 }
 
 std::size_t Database::size() const {
     return store_.size();
+}
+
+// Returns the three indexes we have in our database for faster retrieval
+const Indexes& Database::indexes() const {
+    return indexes_;
 }
 
 }

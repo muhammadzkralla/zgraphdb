@@ -10,6 +10,7 @@ add_library(zgraphdb
     src/model/term.cpp
     src/storage/dictionary.cpp
     src/storage/triple_store.cpp
+    src/storage/indexes.cpp
     src/api/db.cpp
 )
 
