@@ -90,7 +90,7 @@ std::vector<EncodedTriple> collect(const std::vector<Key>& index,
 
 }
 
-// Rebuilds all the indexes in our database, called directly after database initialization
+// Rebuilds all the indexes in our database, called after triples are loaded
 void Indexes::rebuild(const std::vector<EncodedTriple>& triples) {
     spo_.clear();
     pos_.clear();

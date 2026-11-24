@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cstddef>
 #include <cstdio>
 #include <fstream>
 #include <optional>
@@ -7,6 +8,7 @@
 #include <vector>
 
 #include "zgraphdb/api/db.hpp"
+#include "zgraphdb/query/lexer.hpp"
 #include "zgraphdb/storage/dictionary.hpp"
 #include "zgraphdb/storage/indexes.hpp"
 #include "zgraphdb/storage/triple_store.hpp"
@@ -116,6 +118,54 @@ int main() {
     assert(exact[0].subject == 5);
     assert(exact[0].predicate == 2);
     assert(exact[0].object == 6);
+
+    const std::string query =
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+        "SELECT ?name WHERE {\n"
+        "  <http://example.org/alice> foaf:knows ?friend .\n"
+        "  ?friend foaf:name ?name .\n"
+        "}\n";
+    const auto tokens = zgraphdb::tokenize(query);
+    const std::vector<zgraphdb::TokenKind> expected = {
+        zgraphdb::TokenKind::PrefixKeyword,
+        zgraphdb::TokenKind::PrefixedName,
+        zgraphdb::TokenKind::Iri,
+        zgraphdb::TokenKind::SelectKeyword,
+        zgraphdb::TokenKind::Variable,
+        zgraphdb::TokenKind::WhereKeyword,
+        zgraphdb::TokenKind::LBrace,
+        zgraphdb::TokenKind::Iri,
+        zgraphdb::TokenKind::PrefixedName,
+        zgraphdb::TokenKind::Variable,
+        zgraphdb::TokenKind::Dot,
+        zgraphdb::TokenKind::Variable,
+        zgraphdb::TokenKind::PrefixedName,
+        zgraphdb::TokenKind::Variable,
+        zgraphdb::TokenKind::Dot,
+        zgraphdb::TokenKind::RBrace,
+        zgraphdb::TokenKind::End,
+    };
+    assert(tokens.size() == expected.size());
+    for (std::size_t i = 0; i < expected.size(); ++i) {
+        assert(tokens[i].kind == expected[i]);
+    }
+    assert(tokens[0].value == "PREFIX");
+    assert(tokens[1].value == "foaf:");
+    assert(tokens[2].value == "http://xmlns.com/foaf/0.1/");
+    assert(tokens[4].value == "name");
+    assert(tokens[8].value == "foaf:knows");
+    assert(tokens[9].value == "friend");
+    assert(tokens[16].value.empty());
+    assert(tokens[4].line == 2);
+    assert(tokens[8].line == 3);
+
+    bool lexerThrew = false;
+    try {
+        zgraphdb::tokenize("SELECT <oops");
+    } catch (const std::runtime_error&) {
+        lexerThrew = true;
+    }
+    assert(lexerThrew);
 
     return 0;
 }

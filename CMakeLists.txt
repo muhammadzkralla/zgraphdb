@@ -11,6 +11,7 @@ add_library(zgraphdb
     src/storage/dictionary.cpp
     src/storage/triple_store.cpp
     src/storage/indexes.cpp
+    src/query/lexer.cpp
     src/api/db.cpp
 )
 
