@@ -8,7 +8,9 @@
 #include <vector>
 
 #include "zgraphdb/api/db.hpp"
+#include "zgraphdb/query/ast.hpp"
 #include "zgraphdb/query/lexer.hpp"
+#include "zgraphdb/query/parser.hpp"
 #include "zgraphdb/storage/dictionary.hpp"
 #include "zgraphdb/storage/indexes.hpp"
 #include "zgraphdb/storage/triple_store.hpp"
@@ -166,6 +168,84 @@ int main() {
         lexerThrew = true;
     }
     assert(lexerThrew);
+
+    const zgraphdb::QueryDocument document{
+        zgraphdb::SelectQuery{
+            {zgraphdb::Variable{"name"}},
+            {
+                zgraphdb::QueryTriplePattern{
+                    zgraphdb::IriRef{"http://example.org/alice"},
+                    zgraphdb::IriRef{"http://xmlns.com/foaf/0.1/knows"},
+                    zgraphdb::Variable{"friend"},
+                },
+                zgraphdb::QueryTriplePattern{
+                    zgraphdb::Variable{"friend"},
+                    zgraphdb::IriRef{"http://xmlns.com/foaf/0.1/name"},
+                    zgraphdb::Variable{"name"},
+                },
+            },
+        },
+    };
+    const auto* select = std::get_if<zgraphdb::SelectQuery>(&document.query);
+    assert(select != nullptr);
+    assert(select->variables.size() == 1);
+    assert(select->variables[0].name == "name");
+    assert(select->patterns.size() == 2);
+
+    const auto& firstSubject = std::get<zgraphdb::IriRef>(select->patterns[0].subject);
+    const auto& firstPredicate = std::get<zgraphdb::IriRef>(select->patterns[0].predicate);
+    const auto& firstObject = std::get<zgraphdb::Variable>(select->patterns[0].object);
+    assert(firstSubject.value == "http://example.org/alice");
+    assert(firstPredicate.value == "http://xmlns.com/foaf/0.1/knows");
+    assert(firstObject.name == "friend");
+
+    const auto& secondSubject = std::get<zgraphdb::Variable>(select->patterns[1].subject);
+    const auto& secondPredicate = std::get<zgraphdb::IriRef>(select->patterns[1].predicate);
+    const auto& secondObject = std::get<zgraphdb::Variable>(select->patterns[1].object);
+    assert(secondSubject.name == "friend");
+    assert(secondPredicate.value == "http://xmlns.com/foaf/0.1/name");
+    assert(secondObject.name == "name");
+
+    const std::string parserQuery =
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+        "SELECT ?name WHERE {\n"
+        "  <http://example.org/alice> foaf:knows ?friend .\n"
+        "  ?friend foaf:name ?name .\n"
+        "}\n";
+    const zgraphdb::QueryDocument parsed = zgraphdb::parseQuery(zgraphdb::tokenize(parserQuery));
+    const auto* parsedSelect = std::get_if<zgraphdb::SelectQuery>(&parsed.query);
+    assert(parsedSelect != nullptr);
+    assert(parsedSelect->variables.size() == 1);
+    assert(parsedSelect->variables[0].name == "name");
+    assert(parsedSelect->patterns.size() == 2);
+
+    const auto& parsedFirstSubject = std::get<zgraphdb::IriRef>(parsedSelect->patterns[0].subject);
+    const auto& parsedFirstPredicate = std::get<zgraphdb::IriRef>(parsedSelect->patterns[0].predicate);
+    const auto& parsedFirstObject = std::get<zgraphdb::Variable>(parsedSelect->patterns[0].object);
+    assert(parsedFirstSubject.value == "http://example.org/alice");
+    assert(parsedFirstPredicate.value == "http://xmlns.com/foaf/0.1/knows");
+    assert(parsedFirstObject.name == "friend");
+
+    const auto& parsedSecondSubject = std::get<zgraphdb::Variable>(parsedSelect->patterns[1].subject);
+    const auto& parsedSecondPredicate = std::get<zgraphdb::IriRef>(parsedSelect->patterns[1].predicate);
+    const auto& parsedSecondObject = std::get<zgraphdb::Variable>(parsedSelect->patterns[1].object);
+    assert(parsedSecondSubject.name == "friend");
+    assert(parsedSecondPredicate.value == "http://xmlns.com/foaf/0.1/name");
+    assert(parsedSecondObject.name == "name");
+
+    const zgraphdb::QueryDocument parsedAsk = zgraphdb::parseQuery(zgraphdb::tokenize(
+        "ASK WHERE { <http://example.org/alice> <http://xmlns.com/foaf/0.1/knows> <http://example.org/bob> . }"));
+    const auto* ask = std::get_if<zgraphdb::AskQuery>(&parsedAsk.query);
+    assert(ask != nullptr);
+    assert(ask->patterns.size() == 1);
+
+    bool parserThrew = false;
+    try {
+        zgraphdb::parseQuery(zgraphdb::tokenize("SELECT ?s WHERE { ?s foo:bar ?o . }"));
+    } catch (const std::runtime_error&) {
+        parserThrew = true;
+    }
+    assert(parserThrew);
 
     return 0;
 }
