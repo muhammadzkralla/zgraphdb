@@ -43,6 +43,15 @@ std::uint32_t Dictionary::intern(const Term& term) {
     return id;
 }
 
+// Finds the term id using the passed term key if exists, might not exist, so optional.
+std::optional<std::uint32_t> Dictionary::find(const Term& term) const {
+    auto found = idByKey_.find(keyOf(term));
+    if (found == idByKey_.end()) {
+        return std::nullopt;
+    }
+    return found->second;
+}
+
 // Finds the term with that id if exists, might not exist, so optional.
 std::optional<Term> Dictionary::lookup(std::uint32_t id) const {
     if (id >= terms_.size()) {

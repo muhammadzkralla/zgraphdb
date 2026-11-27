@@ -13,6 +13,7 @@ namespace zgraphdb {
 class Dictionary {
 public:
     std::uint32_t intern(const Term& term);
+    std::optional<std::uint32_t> find(const Term& term) const;
     std::optional<Term> lookup(std::uint32_t id) const;
     std::size_t size() const;
 
